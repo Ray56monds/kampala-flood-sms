@@ -6,20 +6,28 @@ via Africa's Talking when heavy rain is predicted.
 
 import requests
 from datetime import datetime, timezone
-import africastalking
+import africastalking  # type: ignore
 import os
+from typing import TypedDict, Any
 
 # ── Configuration ────────────────────────────────────────────────────────────
 
+class Neighbourhood(TypedDict):
+    """Type definition for neighbourhood data."""
+    name: str
+    lat: float
+    lon: float
+    tip: str
+
 AT_USERNAME = os.getenv("AT_USERNAME", "sandbox")       # Africa's Talking username
-AT_API_KEY  = os.getenv("AT_API_KEY",  "your_api_key") # Africa's Talking API key
+AT_API_KEY  = os.getenv("AT_API_KEY", "your_api_key") # Africa's Talking API key
 AT_SENDER   = os.getenv("AT_SENDER",   "KampalAlert")  # Sender name (approved by AT)
 
 # Rainfall threshold in mm over the forecast window (3 hours) that triggers alert
 ALERT_THRESHOLD_MM = 15.0
 
 # Kampala flood-prone neighbourhoods with their coordinates
-NEIGHBOURHOODS = [
+NEIGHBOURHOODS: list[Neighbourhood] = [
     {
         "name": "Bwaise",
         "lat": 0.3538,
@@ -56,7 +64,7 @@ def get_rainfall_forecast(lat: float, lon: float) -> list[float]:
     Returns a list of precipitation values in mm.
     """
     url = "https://api.open-meteo.com/v1/forecast"
-    params = {
+    params: dict[str, str | float | int] = {
         "latitude":              lat,
         "longitude":             lon,
         "hourly":                "precipitation",
@@ -93,12 +101,12 @@ def evaluate_risk(forecast_mm: list[float]) -> tuple[bool, float]:
 
 # ── SMS sending ──────────────────────────────────────────────────────────────
 
-def send_sms_alert(neighbourhood: dict, total_mm: float, recipients: list[str]) -> None:
+def send_sms_alert(neighbourhood: Neighbourhood, total_mm: float, recipients: list[str]) -> None:
     """
     Send an SMS flood alert to all registered numbers in a neighbourhood.
     """
-    africastalking.initialize(AT_USERNAME, AT_API_KEY)
-    sms = africastalking.SMS
+    africastalking.initialize(AT_USERNAME, AT_API_KEY)  # type: ignore
+    sms = africastalking.SMS  # type: ignore
 
     message = (
         f"⚠️ FLOOD ALERT — {neighbourhood['name']}: "
@@ -108,7 +116,7 @@ def send_sms_alert(neighbourhood: dict, total_mm: float, recipients: list[str]) 
     )
 
     try:
-        response = sms.send(message, recipients, sender_id=AT_SENDER)
+        response: Any = sms.send(message, recipients, sender_id=AT_SENDER)  # type: ignore
         print(f"[{neighbourhood['name']}] SMS sent → {response}")
     except Exception as e:
         print(f"[{neighbourhood['name']}] SMS failed: {e}")

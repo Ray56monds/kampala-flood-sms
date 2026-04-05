@@ -122,6 +122,12 @@
     .zone-name { font-weight: 500; }
     .zone-mm   { color: #64748b; font-size: 0.8rem; }
 
+    #system-status { font-size: 1rem; padding-top: 4px; }
+
+    .zone-status-section { margin-top: 1rem; }
+
+    .loading-message { color: #94a3b8; font-size: 0.85rem; }
+
     footer {
       text-align: center;
       padding: 1.5rem;
@@ -157,7 +163,7 @@
     </div>
     <div class="card">
       <div class="label">System status</div>
-      <div class="value" style="font-size:1rem; padding-top:4px;" id="system-status">Loading...</div>
+      <div class="value" id="system-status">Loading...</div>
     </div>
   </div>
 
@@ -171,10 +177,10 @@
     <div class="panel">
       <h2>3-Hour Rainfall Forecast (mm)</h2>
       <canvas id="rain-chart" height="160"></canvas>
-      <div style="margin-top: 1rem;">
+      <div class="zone-status-section">
         <h2>Zone Status</h2>
         <div class="zone-list" id="zone-list">
-          <div style="color:#94a3b8; font-size:0.85rem;">Fetching forecast data...</div>
+          <div class="loading-message">Fetching forecast data...</div>
         </div>
       </div>
     </div>
